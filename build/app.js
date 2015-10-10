@@ -10,9 +10,9 @@
 Sitios de donde sacar información de distintos sitios de noticias
 - Twitter (Stream de algunas palabras)
 - SoyChile.cl (RSS)
-- Emol
+- Emol (API app mobile)
  */
-var Assert, Async, Colors, Config, EmolModule, MONGO_URL, MongoClient, Scrapper, TwitterModule, scrapper;
+var Assert, Async, Colors, Config, EmolModule, MONGO_URL, MongoClient, Scrapper, TwitterModule, _, scrapper;
 
 TwitterModule = require('./src/twitter_module');
 
@@ -27,6 +27,8 @@ Assert = require('assert');
 Config = require('./settings.json');
 
 Colors = require('colors');
+
+_ = require('underscore');
 
 Colors.setTheme({
   info: 'green',
@@ -60,35 +62,38 @@ Scrapper = (function() {
         var twitterModule;
         twitterModule = new TwitterModule(_this.new_data);
         twitterModule.start();
-        console.log("\t[-] Iniciado modulo Twitter".info);
+        console.log("\t[-] Iniciado modulo Twitter".warn);
         return callback();
       }, function(callback) {
         var emolModule;
         emolModule = new EmolModule(_this.new_data);
         emolModule.start();
-        console.log("\t[-] Iniciado modulo Emol".info);
+        console.log("\t[-] Iniciado modulo Emol".warn);
         return callback();
       }, function(callback) {
         console.log("[+] Scrapper iniciado".info);
+        _this.update_status();
         return callback();
       }
     ]);
   }
 
   Scrapper.prototype.new_data = function(moduleName, id, data) {
-
-    /*
-    		Falta check por id para no repetir
-    		collection = _this.db.collection moduleName
-    		collection.insert data, (err, result) ->
-    			Assert.equal err, null, "[!] Error al ingresar dato a Mongo".error
-     */
-    _this.numeroDocumentos++;
-    return _this.update_status();
+    var collection;
+    collection = _this.db.collection(moduleName);
+    if (!_.isEmpty(collection.find({
+      id: id
+    }).limit(1).count())) {
+      collection.insert(data, function(err, result) {
+        return Assert.equal(err, null, "[!] Error al ingresar dato a Mongo".error);
+      });
+      _this.numeroDocumentos++;
+      return _this.update_status();
+    }
   };
 
   Scrapper.prototype.update_status = function() {
-    return process.stdout.write(("\t[-] Encontrados " + _this.numeroDocumentos + " documentos\r").info);
+    return process.stdout.write(("\t[-] Encontrados " + _this.numeroDocumentos + " documentos nuevos\r").info);
   };
 
   Scrapper.prototype.stop = function() {

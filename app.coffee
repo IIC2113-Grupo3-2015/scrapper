@@ -9,16 +9,17 @@
 Sitios de donde sacar información de distintos sitios de noticias
 - Twitter (Stream de algunas palabras)
 - SoyChile.cl (RSS)
-- Emol
+- Emol (API app mobile)
 ###
 
-TwitterModule = require './src/twitter_module'
-EmolModule = require './src/emol_module'
-MongoClient = require('mongodb').MongoClient
-Async = require 'async'
-Assert = require 'assert' 
-Config = require './settings.json'
-Colors = require 'colors'
+TwitterModule 	= require './src/twitter_module'
+EmolModule 		= require './src/emol_module'
+MongoClient 	= require('mongodb').MongoClient
+Async 			= require 'async'
+Assert 			= require 'assert' 
+Config 			= require './settings.json'
+Colors 			= require 'colors'
+_ 				= require 'underscore'
 
 Colors.setTheme
 	info: 'green',
@@ -54,30 +55,29 @@ class Scrapper
 			(callback) ->
 				twitterModule = new TwitterModule _this.new_data
 				twitterModule.start()
-				console.log "\t[-] Iniciado modulo Twitter".info
+				console.log "\t[-] Iniciado modulo Twitter".warn
 				callback()
 			(callback) ->
 				emolModule = new EmolModule _this.new_data
 				emolModule.start()
-				console.log "\t[-] Iniciado modulo Emol".info
+				console.log "\t[-] Iniciado modulo Emol".warn
 				callback()
 			(callback) ->
 				console.log "[+] Scrapper iniciado".info
+				_this.update_status()
 				callback()
 		])
 
 	new_data: (moduleName, id, data) ->
-		###
-		Falta check por id para no repetir
 		collection = _this.db.collection moduleName
-		collection.insert data, (err, result) ->
-			Assert.equal err, null, "[!] Error al ingresar dato a Mongo".error
-		###
-		_this.numeroDocumentos++
-		_this.update_status()
+		if not _.isEmpty(collection.find({id: id}).limit(1).count())
+			collection.insert data, (err, result) ->
+				Assert.equal err, null, "[!] Error al ingresar dato a Mongo".error
+			_this.numeroDocumentos++
+			_this.update_status()
 
 	update_status: ->
-		process.stdout.write "\t[-] Encontrados #{_this.numeroDocumentos} documentos\r".info
+		process.stdout.write "\t[-] Encontrados #{_this.numeroDocumentos} documentos nuevos\r".info
 
 	stop: ->
 		console.log "[+] Deteniendo Scrapper".info

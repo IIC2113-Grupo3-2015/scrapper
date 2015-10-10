@@ -1,5 +1,6 @@
 
 /*
+Modulo EMOL
 URLS usadas por app mobile
 www.emol.com/XMLtoJSON/?App=Android&Seccion=Detalle&Id=753521
 www.emol.com/XMLtoJSON/?App=Android&Seccion=main
@@ -40,7 +41,7 @@ EmolModule = (function(superClass) {
     results = [];
     for (i = 0, len = ref.length; i < len; i++) {
       item = ref[i];
-      results.push(_this.notify(item.id(item)));
+      results.push(_this.notify(item.id, item));
     }
     return results;
   };
@@ -48,7 +49,7 @@ EmolModule = (function(superClass) {
   EmolModule.prototype.start = function() {
     return setInterval(function() {
       return _this.http('http://www.emol.com/XMLtoJSON/?App=Android&Seccion=Nacional', _this.parse_section);
-    }, 500);
+    }, 1000 * 60 * 5);
   };
 
   return EmolModule;

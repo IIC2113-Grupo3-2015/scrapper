@@ -41,7 +41,11 @@ console.log """
 class Scrapper
 
 	_this = Scrapper.prototype
-
+	###
+	Descripcion: Construye e inicia el scrapper
+	PreCondiciones: 
+	PostCondiciones: Modulos iniciados
+	###
 	constructor: ->
 		_this.numeroDocumentos = 0
 		console.log "[+] Iniciando Scrapper".info
@@ -67,7 +71,12 @@ class Scrapper
 				_this.update_status()
 				callback()
 		])
-
+	###
+	Descripcion: Inserta un nuevo documento en la base de datos
+	PreCondiciones: Nombre del modulo, que sera la coleccion de la base de datos,
+	id unico del contenido y data que es contenido
+	PostCondiciones: Datos guardados correctamente en Base de Datos.
+	###
 	new_data: (moduleName, id, data) ->
 		collection = _this.db.collection moduleName
 		if not _.isEmpty(collection.find({id: id}).limit(1).count())
@@ -75,10 +84,18 @@ class Scrapper
 				Assert.equal err, null, "[!] Error al ingresar dato a Mongo".error
 			_this.numeroDocumentos++
 			_this.update_status()
-
+	###
+	Descripcion: Actualiza la informacion en consola del estado del Scrapper
+	PreCondiciones: Informacion de consola no esta actualizada
+	PostCondiciones: La informacion actualizada en consola del estado del Scrapper
+	###
 	update_status: ->
 		process.stdout.write "\t[-] Encontrados #{_this.numeroDocumentos} documentos nuevos\r".info
-
+	###
+	Descripcion: Detiene el Scrapper y sus modulos
+	PreCondiciones: Todos los modulos funcionando
+	PostCondiciones: Todos los modulos detenidos y tambien la conexion con la base de datos
+	###
 	stop: ->
 		console.log "[+] Deteniendo Scrapper".info
 		_this.db.close()

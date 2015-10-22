@@ -2,7 +2,7 @@
   "name": "scrapper",
   "version": "1.0.0",
   "description": "Scrapper para el proyecto de diseño detallado de software",
-  "main": "app.js",
+  "main": "build/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

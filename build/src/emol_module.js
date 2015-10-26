@@ -18,9 +18,23 @@ EmolModule = (function(superClass) {
 
   _this = EmolModule.prototype;
 
+
+  /*
+  Descripcion: Constructor del Modulo Emol
+  PreCondiciones: Modulo de Emol aun no contruido
+  PostCondiciones: Modulo de Emol construido
+   */
+
   function EmolModule(notificable) {
     EmolModule.__super__.constructor.call(this, notificable);
   }
+
+
+  /*
+  Descripcion: Parsea una seccion en emol
+  PreCondiciones: El cuerpo (body) del HTML de la seccion de Emol
+  PostCondiciones: Se parsean todos las noticias de esa seccion
+   */
 
   EmolModule.prototype.parse_section = function(body) {
     var i, item, len, parsed_body, ref, results;
@@ -34,6 +48,13 @@ EmolModule = (function(superClass) {
     return results;
   };
 
+
+  /*
+  Descripcion: Parseo de una noticia
+  PreCondiciones: El cuerpo (body) del HTML de la noticia en Emol
+  PostCondiciones: El cuerpo parseado notificado al Scrapper
+   */
+
   EmolModule.prototype.parse_detail = function(body) {
     var i, item, len, parsed_body, ref, results;
     parsed_body = JSON.parse(body);
@@ -46,10 +67,20 @@ EmolModule = (function(superClass) {
     return results;
   };
 
+
+  /*
+  Descripcion: Inicia el modulo de Emol
+  PreCondiciones: Modulo de emol no iniciado
+  PostCondiciones: Modulo de emol inicia intervalor de request
+   */
+
   EmolModule.prototype.start = function() {
-    return setInterval(function() {
+    var to_start;
+    to_start = function() {
       return _this.http('http://www.emol.com/XMLtoJSON/?App=Android&Seccion=Nacional', _this.parse_section);
-    }, 1000 * 60 * 5);
+    };
+    to_start();
+    return setInterval(to_start, 1000 * 60 * 5);
   };
 
   return EmolModule;

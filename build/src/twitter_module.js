@@ -11,10 +11,24 @@ Config = require('./../settings.json');
 TwitterModule = (function(superClass) {
   extend(TwitterModule, superClass);
 
+
+  /*
+  Descripcion: Constructor del Modulo Twitter
+  PreCondiciones: Modulo de Twitter aun no contruido
+  PostCondiciones: Modulo de Twitter construido
+   */
+
   function TwitterModule(notificable) {
     TwitterModule.__super__.constructor.call(this, notificable);
     this.client = new Twitter(Config.twitter);
   }
+
+
+  /*
+  Descripcion: Inicia el modulo de Twitter buscando en el stream
+  PreCondiciones: El stream de datos no se analiza aun
+  PostCondiciones: Se inicia analisis del stream de tweets que luego es notificado al scrapper
+   */
 
   TwitterModule.prototype.start = function() {
     return this.client.stream('statuses/filter', {

@@ -16,6 +16,7 @@ TwitterModule     = require './src/twitter_module'
 EmolModule        = require './src/emol_module'
 LaTerceraModule   = require './src/la_tercera_module'
 MongoClient       = require('mongodb').MongoClient
+MongoClient       = require 'pg'
 Async             = require 'async'
 Assert            = require 'assert' 
 Config            = require './settings.json'
@@ -30,6 +31,7 @@ Colors.setTheme
   error: 'red'
 
 MONGO_URL = "mongodb://#{Config.mongodb.host}:#{Config.mongodb.port}/#{Config.mongodb.database}"
+POSTGRE_URL = "postgres://#{Config.postgredb.username}:#{Config.postgredb.password}@#{Config.postgredb.host}/#{Config.postgredb.database}";
 
 console.log """
 \ ___  ___ _ __ __ _ _ __  _ __   ___ _ __

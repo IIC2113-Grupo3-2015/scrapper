@@ -13,6 +13,6 @@ services:
   - postgresql
 before_script:
   - coffee -c -o build app.coffee
-  - coffee -c -o build/src app.coffee
+  - coffee -c -o build/src src
   - cp settings.json build/settings.json
   - psql -c 'create database scrapper;' -U postgres

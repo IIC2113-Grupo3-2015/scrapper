@@ -16,9 +16,9 @@ TwitterModule     = require './src/twitter_module'
 EmolModule        = require './src/emol_module'
 LaTerceraModule   = require './src/la_tercera_module'
 MongoClient       = require('mongodb').MongoClient
-MongoClient       = require 'pg'
+PgClient          = require 'pg'
 Async             = require 'async'
-Assert            = require 'assert' 
+Assert            = require 'assert'
 Config            = require './settings.json'
 Colors            = require 'colors'
 _                 = require 'underscore'
@@ -46,19 +46,29 @@ class Scrapper
   _this = Scrapper.prototype
   ###
   Descripcion: Construye e inicia el scrapper
-  PreCondiciones: 
+  PreCondiciones:
   PostCondiciones: Modulos iniciados
   ###
   constructor: ->
     _this.numeroDocumentos = 0
+    _this.candidatos = []
     console.log "[+] Iniciando Scrapper".info
     Async.series([
-      (callback) -> 
+      (callback) ->
         MongoClient.connect MONGO_URL, (err, db) ->
           Assert.equal err, null, "[!] Error al conectarse a MongoDB".error
           _this.db = db
           console.log "[+] Conectado correctamente a MongoDB".info
           callback()
+      (callback) ->
+        PgClient.connect POSTGRE_URL, (err, client, done) ->
+          if err
+            callback(true)
+          client.query 'SELECT * FROM candidatos', (err, result) ->
+            if err
+              callback(true)
+            callback()
+            console.log result.rows[0].number
       (callback) ->
         twitterModule = new TwitterModule _this.new_data
         twitterModule.start()
@@ -81,7 +91,7 @@ class Scrapper
     ])
   ###
   Descripcion: Inserta un nuevo documento en la base de datos
-  PreCondiciones: Nombre del modulo, que sera la coleccion de la base de datos,
+  PreCondiciones: Nombre del modulo, que sera la coleccion de la BD,
   id unico del contenido y data que es contenido
   PostCondiciones: Datos guardados correctamente en Base de Datos.
   ###
@@ -89,12 +99,11 @@ class Scrapper
     _this.collection = _this.db.collection moduleName
     Async.series([
       (callback) ->
-        _this.collection.count( { id: id } , (err, count) -> 
+        _this.collection.count { id: id } , (err, count) ->
           if count == 0
-            callback() 
+            callback()
           else
-            callback(true) 
-        )
+            callback(true)
       (callback) ->
         _this.collection.insertOne data, (err, result) ->
           Assert.equal err, null, "[!] Error al ingresar dato a Mongo".error
@@ -115,6 +124,9 @@ class Scrapper
   ###
   stop: ->
     console.log "[+] Deteniendo Scrapper".info
-    _this.db.close()
+    _this.db.close() if _this.db
+    process.exit()
 
 scrapper = new Scrapper()
+
+module.exports = scrapper

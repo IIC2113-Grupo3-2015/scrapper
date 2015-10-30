@@ -8,6 +8,11 @@ node_js:
   - "0.8"
   - "0.6"
   - "iojs"
+services:
+  - mongodb
+  - postgresql
 before_script:
-  - npm install -g gulp
-script: gulp
+  - coffee -c -o build app.coffee
+  - coffee -c -o build/src app.coffee
+  - cp settings.json build/settings.json
+  - psql -c 'create database scrapper;' -U postgres

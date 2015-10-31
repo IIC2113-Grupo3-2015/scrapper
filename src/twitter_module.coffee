@@ -14,7 +14,8 @@ class TwitterModule extends Notifier
   constructor: (notificable, candidates) ->
     super notificable
     _this.client = new Twitter Config.twitter
-    _this.candidates = candidates
+    #_this.candidates = candidates
+    _this.candidates = ["piñera", "bachelet"]
 
   ###
   Descripcion: Inicia el modulo de Twitter buscando en el stream
@@ -22,13 +23,13 @@ class TwitterModule extends Notifier
   PostCondiciones: Se inicia analisis del stream de tweets que luego es notificado al scrapper
   ###
   start: ->
-    _this.stream 'statuses/filter', { track: _this.candidates.join(',') }, (stream) ->
+    _this.client.stream 'statuses/filter', { track: _this.candidates.join(",") }, (stream) ->
       stream.on 'data', (tweet) ->
         data = {}
         data.id = tweet.id
         data.candidato = _this.candidates.sample
-        data.tweet =  tweet.description
-        _this.notify tweet.id tweet.text
+        data.tweet =  tweet.text
+        _this.notify data.id, data
       stream.on 'error', (error) ->
         throw error;
 

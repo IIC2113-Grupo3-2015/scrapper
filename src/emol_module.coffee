@@ -38,10 +38,10 @@ class EmolModule extends Notifier
     parsed_body = JSON.parse body
     for item in parsed_body.items
       data = {}
-      data.id = content.id
-      data.title = content.title
-      data.data =  content.Text
-      _this.notify item.id, item
+      data.id = item.id
+      data.title = item.title
+      data.data =  item.Text
+      _this.notify data.id, data
 
   ###
   Descripcion: Inicia el modulo de Emol

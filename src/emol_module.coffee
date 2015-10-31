@@ -37,6 +37,10 @@ class EmolModule extends Notifier
   parse_detail: (body) ->
     parsed_body = JSON.parse body
     for item in parsed_body.items
+      data = {}
+      data.id = content.id
+      data.title = content.title
+      data.data =  content.Text
       _this.notify item.id, item
 
   ###

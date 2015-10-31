@@ -29,8 +29,7 @@ class LaTerceraModule extends Notifier
       item = {}
       item.id = content.id
       item.title = content.title
-      item.date = content.date
-      item.note =  content.associates[0].note
+      item.data =  content.associates[0].note
       _this.notify item.id, item
     
   ###

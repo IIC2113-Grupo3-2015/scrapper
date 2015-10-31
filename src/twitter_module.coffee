@@ -4,14 +4,17 @@ Config = require './../settings.json'
 
 class TwitterModule extends Notifier
 
+  _this = TwitterModule.prototype
+
   ###
   Descripcion: Constructor del Modulo Twitter
   PreCondiciones: Modulo de Twitter aun no contruido
   PostCondiciones: Modulo de Twitter construido
   ###
-  constructor: (notificable) ->
+  constructor: (notificable, candidates) ->
     super notificable
-    @client = new Twitter Config.twitter
+    _this.client = new Twitter Config.twitter
+    _this.candidates = candidates
 
   ###
   Descripcion: Inicia el modulo de Twitter buscando en el stream
@@ -19,9 +22,13 @@ class TwitterModule extends Notifier
   PostCondiciones: Se inicia analisis del stream de tweets que luego es notificado al scrapper
   ###
   start: ->
-    @client.stream 'statuses/filter', { track: 'javascript' }, (stream) ->
+    _this.stream 'statuses/filter', { track: _this.candidates.join(',') }, (stream) ->
       stream.on 'data', (tweet) ->
-        @notify tweet.text
+        data = {}
+        data.id = tweet.id
+        data.candidato = _this.candidates.sample
+        data.tweet =  tweet.description
+        _this.notify tweet.id tweet.text
       stream.on 'error', (error) ->
         throw error;
 

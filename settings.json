@@ -6,7 +6,7 @@
   },
   "postgredb": {
     "host": "localhost",
-    "port": 27017,
+    "port": 5432,
     "database": "scrapper",
     "username": "root",
     "password": ""

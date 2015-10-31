@@ -56,21 +56,25 @@ class Scrapper
     Async.series([
       (callback) ->
         MongoClient.connect MONGO_URL, (err, db) ->
-          Assert.equal err, null, "[!] Error al conectarse a MongoDB".error
+          if err
+            console.log "[!] Error al conectarse a MongoDB".error
+            return callback(true)
           _this.db = db
           console.log "[+] Conectado correctamente a MongoDB".info
           callback()
       (callback) ->
         PgClient.connect POSTGRE_URL, (err, client, done) ->
           if err
-            callback(true)
+            console.log "[!] Error al conectarse a postgreSQL: #{err}".error
+            return callback(true)
           client.query 'SELECT * FROM candidatos', (err, result) ->
             if err
-              callback(true)
+              console.log "[!] Error al consultar base de datos postgreSQL: #{err}".error
+              return callback(true)
             callback()
-            console.log result.rows[0].number
+            _this.candidatos = result.rows[0]
       (callback) ->
-        twitterModule = new TwitterModule _this.new_data
+        twitterModule = new TwitterModule _this.new_data, _this.candidatos
         twitterModule.start()
         console.log "\t[-] Iniciado modulo Twitter".warn
         callback()

@@ -1,6 +1,3 @@
-
-
-
 var assert = require('assert');
 describe('Scrapper', function() {
 	var _this = this;

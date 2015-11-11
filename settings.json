@@ -8,13 +8,13 @@
     "host": "localhost",
     "port": 5432,
     "database": "scrapper",
-    "username": "root",
-    "password": ""
+    "username": "scrapper",
+    "password": "scrapper"
   },
   "twitter": {
-    "consumer_key": "",
-    "consumer_secret": "",
-    "access_token_key": "",
-    "access_token_secret": ""
+    "consumer_key": "fNEwKHmIbwVTG4hBZltrWHtP8",
+    "consumer_secret": "w3pYyDkntRIey2Za6AWMzdSQBIzVsE9DNpArHWKFzSGokt7hZU",
+    "access_token_key": "3129543622-kGI7GmHm3ldR0hXDtAkq9YQU6kMiliYZDD9ixCQ",
+    "access_token_secret": "pQ5XB3bEWf1E9IT0vUJuBLb84fW48ZujJhHiSpfH1GuIk"
   }
 }

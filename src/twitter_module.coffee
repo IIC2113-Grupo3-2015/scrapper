@@ -27,10 +27,17 @@ class TwitterModule extends Notifier
       stream.on 'data', (tweet) ->
         data = {}
         data.id = tweet.id
-        data.candidato = _this.candidates.sample
+        data.candidato = _this.who_is_inside(tweet.text, _this.candidates)
         data.tweet =  tweet.text
         _this.notify data.id, data
       stream.on 'error', (error) ->
         throw error;
+
+  who_is_inside: (text, candidates) ->
+    candidates.each { |x| 
+      if text.include? x
+        return x
+    }
+    return ""
 
 module.exports = TwitterModule

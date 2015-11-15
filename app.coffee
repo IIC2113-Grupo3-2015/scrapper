@@ -15,8 +15,10 @@ Sitios de donde sacar información de distintos sitios de noticias
 TwitterModule     = require './src/twitter_module'
 EmolModule        = require './src/emol_module'
 LaTerceraModule   = require './src/la_tercera_module'
+LaLupaModule      = require './src/la_lupa_module'
 MongoClient       = require('mongodb').MongoClient
 PgClient          = require 'pg'
+SanitizeHtml      = require 'sanitize-html'
 Async             = require 'async'
 Assert            = require 'assert'
 Config            = require './settings.json'
@@ -63,6 +65,8 @@ class Scrapper
           console.log "[+] Conectado correctamente a MongoDB".info
           callback()
       (callback) ->
+        callback()
+        return
         PgClient.connect POSTGRE_URL, (err, client, done) ->
           if err
             console.log "[!] Error al conectarse a postgreSQL: #{err}".error
@@ -89,6 +93,11 @@ class Scrapper
         console.log "\t[-] Iniciado modulo La Tercera".warn
         callback()
       (callback) ->
+        laLupeModule = new LaLupaModule _this.new_data
+        laLupeModule.start()
+        console.log "\t[-] Iniciado modulo La Lupa De La Constitucion".warn
+        callback()
+      (callback) ->
         console.log "[+] Scrapper iniciado".info
         _this.update_status()
         callback()
@@ -101,6 +110,10 @@ class Scrapper
   ###
   new_data: (moduleName, id, data) ->
     _this.collection = _this.db.collection moduleName
+    data.data = SanitizeHtml data.data, 
+      allowedTags: [],
+      allowedAttributes: []
+    console.log data.data
     Async.series([
       (callback) ->
         _this.collection.count { id: id } , (err, count) ->
@@ -110,7 +123,7 @@ class Scrapper
             callback(true)
       (callback) ->
         _this.collection.insertOne data, (err, result) ->
-          Assert.equal err, null, "[!] Error al ingresar dato a Mongo".error
+          Assert.equal err, null, "[!] Error al ingresar dato a Mongo: #{err}".error
         _this.numeroDocumentos++
         _this.update_status()
     ])

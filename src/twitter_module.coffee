@@ -34,10 +34,9 @@ class TwitterModule extends Notifier
         throw error;
 
   who_is_inside: (text, candidates) ->
-    candidates.each { |x| 
-      if text.include? x
-        return x
-    }
+    for candidate in candidates
+      if text.indexOf candidate > -1
+        return candidate
     return ""
 
 module.exports = TwitterModule

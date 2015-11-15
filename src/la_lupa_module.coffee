@@ -16,14 +16,13 @@ class LaLupaModule extends Notifier
 
   parse_feed: (body) ->
     parsed_body = parseString body, { trim: true }, (err, result) ->
-      console.dir result
-      for content in parsed_body.channel.item
+      items = result.rss.channel[0].item
+      for content in items
         item = {}
-        item.id = content.guid
+        item.id = content.guid[0]._
         item.title = content.title
-        item.data =  content.associates[0].note
+        item.data =  content['content:encoded']
         _this.notify item.id, item
-
 
   start: ->
     to_start = () -> _this.http('http://www.lalupadelaconstitucion.cl/feed/', _this.parse_feed)

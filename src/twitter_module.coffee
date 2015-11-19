@@ -15,7 +15,7 @@ class TwitterModule extends Notifier
     super notificable
     _this.client = new Twitter Config.twitter
     #_this.candidates = candidates
-    _this.candidates = ["piñera", "bachelet", "rodrigo valdez"]
+    _this.candidates = ["piñera", "bachelet", "rodrigo valdes"]
 
   ###
   Descripcion: Inicia el modulo de Twitter buscando en el stream
@@ -37,7 +37,7 @@ class TwitterModule extends Notifier
 
   who_is_inside: (text, candidates) ->
     for candidate in candidates
-      if text.indexOf candidate > -1
+      if text.indexOf(candidate) > -1
         return candidate
     return ""
 

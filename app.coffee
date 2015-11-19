@@ -132,7 +132,7 @@ class Scrapper
   PostCondiciones: La informacion actualizada en consola del estado del Scrapper
   ###
   update_status: ->
-    process.stdout.write "\t[-] Encontrados #{_this.numeroDocumentos} documentos nuevos\r".info
+    console.log "\t[-] Encontrados #{_this.numeroDocumentos} documentos nuevos".info
   ###
   Descripcion: Detiene el Scrapper y sus modulos
   PreCondiciones: Todos los modulos funcionando

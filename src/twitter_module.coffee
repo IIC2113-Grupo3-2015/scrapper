@@ -29,6 +29,8 @@ class TwitterModule extends Notifier
         data.id = tweet.id
         data.candidato = _this.who_is_inside(tweet.text, _this.candidates)
         data.tweet =  tweet.text
+        data.autor = tweet.user.name
+        data.link = "https://twitter.com/statuses/#{tweet.id_str}"
         _this.notify data.id, data
       stream.on 'error', (error) ->
         throw error;

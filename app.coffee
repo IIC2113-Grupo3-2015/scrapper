@@ -113,7 +113,6 @@ class Scrapper
     data.data = SanitizeHtml data.data, 
       allowedTags: [],
       allowedAttributes: []
-    console.log data.data
     Async.series([
       (callback) ->
         _this.collection.count { id: id } , (err, count) ->

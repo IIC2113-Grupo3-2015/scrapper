@@ -15,7 +15,7 @@ class TwitterModule extends Notifier
     super notificable
     _this.client = new Twitter Config.twitter
     #_this.candidates = candidates
-    _this.candidates = ["piñera", "bachelet"]
+    _this.candidates = ["piñera", "bachelet", "rodrigo valdez"]
 
   ###
   Descripcion: Inicia el modulo de Twitter buscando en el stream
